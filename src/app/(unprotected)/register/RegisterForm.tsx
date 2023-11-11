@@ -1,6 +1,9 @@
 'use client';
 
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
+import { signIn } from 'next-auth/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { TbUser } from 'react-icons/tb';
@@ -14,9 +17,12 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import PasswordInput from '@/components/ui/passwordInput';
 import { useToast } from '@/components/ui/use-toast';
+import LoaderOverlay from '@/components/ui/loader_overlay';
 
 export default function RegisterForm() {
+  const router = useRouter();
   const { toast } = useToast();
+  const [loading, setLoading] = useState(false);
 
   const form = useForm<z.infer<typeof regFormSchema>>({
     resolver: zodResolver(regFormSchema),
@@ -28,16 +34,25 @@ export default function RegisterForm() {
   });
 
   const onSubmit = async (values: z.infer<typeof regFormSchema>) => {
+    setLoading(true);
     if (values.password !== values.confirmPassword) {
       form.setError('confirmPassword', {
         message: 'does not match password!',
       });
+      setLoading(false);
       return;
     }
 
     try {
       await registerAction(values);
+      const result = await signIn('credentials', { username: values.username, password: values.password, redirect: false });
+      if (result?.status === 401 || !result?.ok) throw 'Something Went Wrong! Try again.';
+
+      router.refresh();
+      router.push('/');
+      setLoading(false);
     } catch (e: any) {
+      setLoading(false);
       toast({
         title: e.message ?? 'Something Went Wrong',
         variant: 'destructive',
@@ -47,6 +62,7 @@ export default function RegisterForm() {
 
   return (
     <Form {...form}>
+      <LoaderOverlay isLoading={loading} />
       <form onSubmit={form.handleSubmit((data) => onSubmit(data))} className='space-y-7'>
         <FormInput control={form.control} name='username' placeholder='Username' Icon={TbUser} />
 

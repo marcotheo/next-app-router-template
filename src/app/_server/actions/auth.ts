@@ -18,8 +18,6 @@ export const registerAction = async (values: z.infer<typeof regFormSchema>) => {
   }
 
   await registerUser(data.data);
-
-  redirect('/');
 };
 
 export const logoutAction = async (includeNextAuth?: boolean) => {
