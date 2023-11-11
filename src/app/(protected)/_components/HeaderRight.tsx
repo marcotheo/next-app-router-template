@@ -31,12 +31,10 @@ export default async function HeaderRight() {
         <Menu />
       </div>
 
-      <div>
+      <div className='md:hidden'>
         <Dialog>
           <DialogTrigger>
-            <Button>
-              <RxHamburgerMenu />
-            </Button>
+            <RxHamburgerMenu />
           </DialogTrigger>
           <DialogContent className='w-[90%] rounded-sm border-0 bg-primarybg text-gray-300'>
             <DialogHeader>
