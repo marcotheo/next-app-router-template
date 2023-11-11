@@ -15,7 +15,7 @@ export const LogoutItem = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <div className='flex h-full w-full items-center ' onClick={logout}>
+    <div className='flex h-full w-full items-center' onClick={logout}>
       {children}
     </div>
   );
