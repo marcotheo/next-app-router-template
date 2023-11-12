@@ -12,3 +12,7 @@ export const regFormSchema = z.object({
     .min(6),
   confirmPassword: z.string().min(6),
 });
+
+export const createPostActionSchema = z.object({
+  caption: z.string().min(1),
+});

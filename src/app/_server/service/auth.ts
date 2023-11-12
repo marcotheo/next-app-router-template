@@ -87,6 +87,7 @@ export const authenticate = async ({ username, password }: { username: string; p
         .add(result.AuthenticationResult?.ExpiresIn ?? 300, 'seconds')
         .unix(),
       id: user.sub,
+      userId: checkIfUserExist[0].id,
       username,
     };
   } catch (e) {

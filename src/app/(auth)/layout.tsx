@@ -2,7 +2,7 @@ import Header from './_components/Header';
 
 export default function AccountLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className='flex h-full flex-col bg-gradient-to-b from-stone-900 to-primarybg sm:bg-gradient-to-tl sm:from-accessory sm:via-primarybg sm:to-black'>
+    <div className='flex h-full flex-col bg-gradient-to-b from-secondary to-primarybg sm:bg-gradient-to-tl sm:from-accessory sm:via-primarybg sm:to-black'>
       <Header />
       <div className='flex h-full items-center'>
         <div className='mx-auto w-[100%] text-white sm:w-[90%]'>

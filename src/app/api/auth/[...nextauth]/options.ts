@@ -41,12 +41,13 @@ export const options: NextAuthOptions = {
           userId: user.id,
           username: user.username,
         };
+        token.userId = user.userId;
       }
 
       return token;
     },
     async session({ session, token }) {
-      return { ...session, cognito: token.cognito };
+      return { ...session, userId: token.userId, cognito: token.cognito };
     },
   },
 
