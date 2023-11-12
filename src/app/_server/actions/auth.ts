@@ -29,18 +29,20 @@ export const logoutAction = async (includeNextAuth?: boolean) => {
 export const refreshTokenAction = async (path: string) => {
   const session = await getServerSession(options);
 
+  const logoutHelper = async (accessToken: string) => {
+    await logout({ accessToken: accessToken });
+    revokeNextAuthSession();
+    revalidatePath(path);
+    return null;
+  };
+
   if (!!session?.cognito) {
     const result = await refreshToken({
       refreshToken: session.cognito.refreshToken,
       username: session.cognito.username,
     });
 
-    if (!result) {
-      await logout({ accessToken: session.cognito.accessToken });
-      revokeNextAuthSession();
-      revalidatePath(path);
-      return null;
-    }
+    if (!result) return await logoutHelper(session.cognito.accessToken);
 
     const tokenChunks = await generateNewNextAuthSession(session, {
       accessToken: result.accessToken,
@@ -51,10 +53,9 @@ export const refreshTokenAction = async (path: string) => {
     if (tokenChunks) {
       setNextAuthSession(tokenChunks);
       return {
-        accessToken: result.accessToken,
         expiresAt: result.expiresAt,
       };
-    }
+    } else return await logoutHelper(result.accessToken);
   }
 
   return null;
